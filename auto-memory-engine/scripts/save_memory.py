@@ -12,7 +12,10 @@ import json
 import argparse
 from datetime import datetime
 
-MEMORY_PATH = "/workspace/MEMORY.md"
+MEMORY_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+    "memory", "MEMORY.md"
+)
 
 VALID_CATEGORIES = [
     "Identity",

@@ -1,6 +1,6 @@
 ---
 name: auto-memory-engine
-description: "Automatically captures and persists user preferences, decisions, context, and learnings to a MEMORY.md file. Triggers at the end of every significant conversation or when the user shares preferences, makes decisions, or provides context that should be remembered. Also triggers at the START of every conversation to load existing memory. Use this skill whenever the user interacts with the assistant — it runs silently in the background."
+description: "Captures and persists user preferences, decisions, context, and learnings to this repo's own MEMORY.md file, scoped to the Project Manager role only. Triggers at the end of a significant conversation in THIS repo, or when the user shares preferences, makes decisions, or provides context specific to this repo's work. Also triggers at the START of a conversation in this repo to load existing memory. Do not trigger in other repos — memory here is local to this repo, not a global assistant memory."
 license: Proprietary
 ---
 
@@ -18,7 +18,7 @@ Persistent memory system that learns and improves across all chats by maintainin
 - Use clear markdown structure with timestamps so memories are searchable.
 - Keep each memory entry concise (1-3 lines max).
 - Group memories by category for easy scanning.
-- The memory file lives at `/workspace/MEMORY.md` in the sandbox.
+- The memory file lives at `memory/MEMORY.md` inside this repo — it is local to this repo, never a shared or global path. Never point it at a path outside this repo.
 
 ## Workflow
 
