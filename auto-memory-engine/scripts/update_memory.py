@@ -12,7 +12,10 @@ import re
 import argparse
 from datetime import datetime
 
-MEMORY_PATH = "/workspace/MEMORY.md"
+MEMORY_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+    "memory", "MEMORY.md"
+)
 
 def remove_memory(search_text: str):
     if not os.path.exists(MEMORY_PATH):
