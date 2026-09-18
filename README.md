@@ -1,11 +1,12 @@
-# Multi-department agentic system
+# DeptOS — multi-department agent runtime
 
-Two layers live in this repository:
+**Review `deptos/`.** That is the product.
 
-1. **`deptos/` — the thing to review.** A runnable Python runtime: Chief of Staff, Finance, Ops, People, Strategy, Auditor. Least-privilege tools, JSONL audit log, pytest, fixture workbooks. No API key required.
-2. **Top-level `*-engine/` folders — prompt skills.** Markdown playbooks plus helper scripts. Useful as agent instructions. Not a multi-agent platform by themselves.
+Six seats (Chief of Staff, Finance, Ops, People, Strategy, Auditor) share a blackboard. Tools are allowlisted. Every decision cites evidence IDs from this run. The auditor rejects ungrounded claims. No API key.
 
-Start here:
+This is a **portfolio demo on fixture plant data**. It is not Outlook, not Microsoft Graph, not a production deployment.
+
+## 90-second demo
 
 ```bash
 cd deptos
@@ -15,8 +16,21 @@ pytest -q
 python -m deptos
 ```
 
-What a reviewer should see after one command: a briefing whose numbers match the Excel recon tool, decisions that cite evidence IDs, and an auditor that would reject “production-ready” language.
+You should see `status=ready_for_human`, training match rate **50%**, five named certification gaps, two decisions with `ev_` IDs.
 
-This runtime is a **portfolio demo**. It is not deployed to a customer and it does not talk to live Outlook.
+Cannot run Python in the room? Read [`deptos/sample_briefing.md`](deptos/sample_briefing.md).
 
-Full notes: [`deptos/README.md`](deptos/README.md)
+Walkthrough for the meeting: [`deptos/WALKTHROUGH.md`](deptos/WALKTHROUGH.md)
+
+## What a reviewer should open
+
+| File | Why |
+|---|---|
+| [`deptos/src/deptos/tools/registry.py`](deptos/src/deptos/tools/registry.py) | Ops cannot call Finance |
+| [`deptos/src/deptos/tools/excel_recon.py`](deptos/src/deptos/tools/excel_recon.py) | openpyxl join on training × PA matrix |
+| [`deptos/src/deptos/agents/auditor.py`](deptos/src/deptos/agents/auditor.py) | kills “production-ready” and uncited decisions |
+| [`deptos/tests/test_runtime.py`](deptos/tests/test_runtime.py) | packet contract + tool denial |
+
+## What not to treat as the product
+
+Top-level `*-engine/` folders are prompt skills from an earlier pass. Leave them closed in the interview.
