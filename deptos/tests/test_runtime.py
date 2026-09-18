@@ -48,6 +48,7 @@ def test_ops_cannot_call_finance_tool(env):
 
 def test_auditor_kills_ungrounded_marketing(env):
     from deptos.agents.auditor import Auditor
+
     fixtures, runs = env
     board = Blackboard("brief", runs)
     board.kv["briefing_md"] = "This is production-ready and live in production. Match rate 12%."
@@ -55,3 +56,12 @@ def test_auditor_kills_ungrounded_marketing(env):
     notes = Auditor(board, build_registry(board)).run()
     assert any("BANNED" in n for n in notes)
     assert any("no evidence" in n.lower() for n in notes)
+
+
+def test_second_run_writes_team_memory(env):
+    fixtures, runs = env
+    first = DeptOS(fixtures, runs).handle("weekly status brief reconcile training")
+    second = DeptOS(fixtures, runs).handle("weekly status brief reconcile training")
+    assert (runs / "team_memory.json").exists()
+    assert "Memory from last run" in second.briefing_md
+    assert first.run_id in second.briefing_md
