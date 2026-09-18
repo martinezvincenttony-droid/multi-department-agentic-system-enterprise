@@ -1,0 +1,9 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/
+runs/*.jsonl
+runs/*.json
+runs/*.md
+runs/*.xlsx
+!runs/.gitkeep
