@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>DeptOS run viewer</title>
+  <style>
+    body { margin:0; font:15px/1.45 ui-sans-serif,system-ui,sans-serif; background:#0b1220; color:#e8eefc; }
+    header { padding:24px 28px; border-bottom:1px solid #243044; }
+    main { display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:20px 28px; }
+    .card { background:#121a2b; border:1px solid #243044; border-radius:14px; padding:16px; }
+    textarea { width:100%; min-height:180px; background:#0a101c; color:#e8eefc; border:1px solid #243044; border-radius:10px; }
+    button { margin-top:8px; background:#3b82f6; color:#fff; border:0; border-radius:8px; padding:8px 14px; }
+    pre { white-space:pre-wrap; font:12px ui-monospace,monospace; }
+    .mut { color:#8aa0c7; font-size:12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DeptOS packet viewer</h1>
+    <p class="mut">Paste runs/*.packet.json. No model calls.</p>
+  </header>
+  <main>
+    <section class="card">
+      <textarea id="raw"></textarea>
+      <button id="load">Render</button>
+      <div id="meta" class="mut"></div>
+      <div id="findings"></div>
+    </section>
+    <section class="card">
+      <pre id="brief">Load a packet.</pre>
+    </section>
+  </main>
+  <script>
+    document.getElementById('load').onclick = () => {
+      const p = JSON.parse(document.getElementById('raw').value);
+      document.getElementById('meta').textContent = p.status + ' · ' + (p.findings||[]).length + ' findings';
+      document.getElementById('findings').innerHTML = (p.findings||[]).map(f => '<div><strong>'+f.severity+'</strong> '+f.title+'<div class="mut">'+f.id+' · '+f.evidence+'</div></div>').join('');
+      document.getElementById('brief').textContent = p.briefing_md || '';
+    };
+  </script>
+</body>
+</html>
