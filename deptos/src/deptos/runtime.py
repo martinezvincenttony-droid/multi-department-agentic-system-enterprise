@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from deptos import team_memory
 from deptos.agents.auditor import Auditor
 from deptos.agents.finance import FinanceAgent
 from deptos.agents.ops import OpsAgent
@@ -33,6 +34,7 @@ class DeptOS:
     def handle(self, request: str) -> Packet:
         board = Blackboard(request, self.runs_dir)
         tools = build_registry(board)
+        board.kv["prior_memory"] = team_memory.load(self.runs_dir)
         ChiefOfStaff(board, tools).plan()
         keywords = ["training", "certif", "osha", "forklift", "audit", "matrix"]
         FinanceAgent(board, tools).run(
@@ -56,4 +58,15 @@ class DeptOS:
         )
         board.emit(AgentId.CHIEF, EventKind.PACKET_READY, f"status={packet.status}")
         board.write_packet(packet)
+        team_memory.save(
+            self.runs_dir,
+            {
+                "run_id": packet.run_id,
+                "status": packet.status,
+                "request": packet.request,
+                "gap_count": (board.kv.get("recon") or {}).get("gap_count"),
+                "match_rate_pct": (board.kv.get("recon") or {}).get("match_rate_pct"),
+                "actions": board.kv.get("people_actions") or [],
+            },
+        )
         return packet
