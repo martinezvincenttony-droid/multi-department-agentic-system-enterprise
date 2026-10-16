@@ -22,7 +22,7 @@ Automatically compiles a structured daily briefing from all connected data sourc
 ## Workflow
 
 1. **Get current date/time** using the datetime tool
-2. **Load memory** — Run `python /workspace/userSkills/auto-memory-engine/scripts/load_memory.py` to recall preferences
+2. **Load memory** — Run `python auto-memory-engine/scripts/load_memory.py` (relative to this repo's root) to recall preferences
 3. **Fetch calendar** — Get today's events using calendar_list_events
 4. **Fetch recent emails** — Get unread/recent emails from the last 12–24 hours using outlook_list_emails or outlook_search_emails
 5. **Fetch Teams activity** — Check recent Teams messages using teams_search_messages for any mentions or important conversations
