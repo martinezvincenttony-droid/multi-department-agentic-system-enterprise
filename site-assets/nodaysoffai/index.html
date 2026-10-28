@@ -617,7 +617,13 @@
           business:data.business, message:data.comment || '(no message)'
         })
       }).then(r=>r.json()).then(j=>{ if(!j.success) throw new Error('email send failed: '+(j.message||'unknown')); return true; });
-      const results = await Promise.allSettled([saveToDb, sendEmail]);
+      // (3) Notion table via Make webhook: every sign-up becomes a row in "Website Sign-Ups".
+      const sendToNotion = fetch('https://hook.us2.make.com/1k1l29w6nmaaiksi6jrhc54ayhnlrh3t',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(data)
+      }).then(r=>{ if(!r.ok) throw new Error('notion save failed ('+r.status+')'); return true; });
+      const results = await Promise.allSettled([saveToDb, sendEmail, sendToNotion]);
       results.forEach(r=>{ if(r.status==='rejected') console.error('Form step failed:', r.reason); });
       if(results.every(r=>r.status==='rejected')) throw new Error('submit failed');
       consultForm.hidden = true;
