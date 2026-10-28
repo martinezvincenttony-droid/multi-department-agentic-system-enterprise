@@ -597,13 +597,29 @@
     const btn = consultForm.querySelector('.form-submit');
     btn.disabled = true; btn.textContent = 'Booking…';
     const data = Object.fromEntries(new FormData(consultForm).entries());
+    if(data.company){ consultForm.hidden = true; document.getElementById('formSuccess').hidden = false; return; } // bot filled the hidden field: pretend success, send nothing
     try{
-      const res = await fetch('/api/consult',{
+      // Two steps run together: (1) save the lead to our database, (2) email it to the owner via Web3Forms.
+      // The visitor sees success if EITHER step worked, so a lead is never lost. Failures are logged to the console.
+      const saveToDb = fetch('/api/consult',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(data)
-      });
-      if(!res.ok) throw new Error('submit failed');
+      }).then(r=>{ if(!r.ok) throw new Error('database save failed ('+r.status+')'); return true; });
+      const sendEmail = fetch('https://api.web3forms.com/submit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json',Accept:'application/json'},
+        body:JSON.stringify({
+          access_key:'ab6b4e52-b003-4e2f-8187-f21b7e0fd1f9',
+          subject:'New call request from nodaysoffai.com',
+          from_name:'No Days Off AI website',
+          name:data.name, email:data.email, phone:data.phone,
+          business:data.business, message:data.comment || '(no message)'
+        })
+      }).then(r=>r.json()).then(j=>{ if(!j.success) throw new Error('email send failed: '+(j.message||'unknown')); return true; });
+      const results = await Promise.allSettled([saveToDb, sendEmail]);
+      results.forEach(r=>{ if(r.status==='rejected') console.error('Form step failed:', r.reason); });
+      if(results.every(r=>r.status==='rejected')) throw new Error('submit failed');
       consultForm.hidden = true;
       const s = document.getElementById('formSuccess');
       s.hidden = false;
